@@ -1,83 +1,82 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const skills = [
-  { name: "Python", change: 2.4, price: 94.2 },
-  { name: "Rust", change: 5.7, price: 78.5 },
-  { name: "AI/ML", change: 8.1, price: 97.3 },
-  { name: "React", change: 1.2, price: 82.4 },
-  { name: "Kubernetes", change: 3.8, price: 88.9 },
-  { name: "Cybersecurity", change: 6.2, price: 91.7 },
-  { name: "Blockchain", change: -2.1, price: 62.3 },
-  { name: "TypeScript", change: 3.1, price: 85.6 },
-  { name: "Go", change: 4.5, price: 80.1 },
-  { name: "Cloud AWS", change: 2.9, price: 92.8 },
-  { name: "Data Science", change: 4.3, price: 89.5 },
-  { name: "DevOps", change: 2.7, price: 84.3 },
-  { name: "Manual QA", change: -4.8, price: 38.2 },
-  { name: "Java", change: 0.3, price: 71.4 },
-  { name: "Swift", change: 1.9, price: 74.8 },
-  { name: "LLM Engineering", change: 12.4, price: 99.1 },
-  { name: "Web3", change: -1.4, price: 55.7 },
+const MOCK_DATA = [
+  { name: "LLM Engineering", price: 99.4, change: 12.4, trend: "up" },
+  { name: "Cybersecurity", price: 91.2, change: 6.5, trend: "up" },
+  { name: "Blockchain", price: 62.7, change: -2.0, trend: "down" },
+  { name: "TypeScript", price: 85.1, change: 3.2, trend: "up" },
+  { name: "Golang", price: 81.0, change: 5.1, trend: "up" },
+  { name: "Cloud AWS", price: 93.8, change: 3.9, trend: "up" },
+  { name: "Rust", price: 87.5, change: 7.8, trend: "up" },
+  { name: "Kubernetes", price: 88.2, change: 5.1, trend: "up" },
 ];
 
 export default function Ticker() {
-  const [data, setData] = useState(skills);
+  const [data, setData] = useState(MOCK_DATA);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setData(prev => prev.map(s => ({
-        ...s,
-        price: Math.max(10, Math.min(100, s.price + (Math.random() - 0.5) * 0.5)),
-        change: s.change + (Math.random() - 0.5) * 0.2,
+      setData(prev => prev.map(item => ({
+        ...item,
+        price: +(item.price + (Math.random() - 0.5) * 0.5).toFixed(1),
+        change: +(item.change + (Math.random() - 0.5) * 0.1).toFixed(1)
       })));
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  const doubled = [...data, ...data];
-
   return (
-    <div style={{
-      background: "rgba(13, 18, 37, 0.95)",
-      borderBottom: "1px solid rgba(59, 130, 246, 0.15)",
-      padding: "8px 0",
-      overflow: "hidden",
+    <div className="ticker-container" style={{
+      height: "48px",
+      display: "flex",
+      alignItems: "center",
+      zIndex: 900,
       position: "sticky",
-      top: 0,
-      zIndex: 50,
+      top: 0
     }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div style={{
-          background: "linear-gradient(135deg, #3b82f6, #06b6d4)",
-          padding: "4px 14px",
-          fontSize: 11,
-          fontWeight: 700,
-          color: "white",
-          fontFamily: "Orbitron, sans-serif",
-          letterSpacing: 1,
-          whiteSpace: "nowrap",
-          flexShrink: 0,
-          marginRight: 16,
-        }}>
-          SKILL MARKET
-        </div>
-        <div className="ticker-container" style={{ flex: 1 }}>
-          <div className="ticker-inner animate-ticker">
-            {doubled.map((s, i) => (
-              <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#f1f5f9" }}>{s.name}</span>
-                <span style={{ fontSize: 12, color: "#94a3b8" }}>{s.price.toFixed(1)}</span>
-                <span style={{
-                  fontSize: 11, fontWeight: 700,
-                  color: s.change >= 0 ? "#10b981" : "#ef4444"
-                }}>
-                  {s.change >= 0 ? "▲" : "▼"} {Math.abs(s.change).toFixed(1)}%
-                </span>
-                <span style={{ color: "#1e293b", marginLeft: 8 }}>|</span>
-              </div>
-            ))}
-          </div>
+      <div style={{
+        background: "black",
+        color: "white",
+        height: "100%",
+        padding: "0 20px",
+        display: "flex",
+        alignItems: "center",
+        fontWeight: 900,
+        fontSize: 14,
+        letterSpacing: 2,
+        borderRight: "4px solid var(--accent-yellow)",
+        marginRight: "-4px"
+      }}>
+        SKILL MARKET
+      </div>
+      <div style={{ flex: 1, overflow: "hidden", height: "100%", display: "flex", alignItems: "center" }}>
+        <div className="ticker-inner animate-ticker">
+          {[...data, ...data].map((item, i) => (
+            <div key={i} style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: 8, 
+              padding: "0 20px",
+              borderRight: "3px solid black",
+              height: "20px",
+              fontWeight: 800,
+              fontSize: 13,
+            }}>
+              <span style={{ color: "black" }}>{item.name}</span>
+              <span style={{ fontFamily: "Space Grotesk, sans-serif" }}>${item.price}</span>
+              <span style={{ 
+                color: item.change >= 0 ? "white" : "white",
+                background: item.change >= 0 ? "var(--accent-green)" : "var(--accent-pink)",
+                padding: "2px 6px",
+                border: "2px solid black",
+                fontSize: 10,
+                fontWeight: 900
+              }}>
+                {item.change >= 0 ? "▲" : "▼"} {Math.abs(item.change)}%
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
